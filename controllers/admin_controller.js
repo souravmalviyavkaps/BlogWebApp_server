@@ -4,6 +4,14 @@ import Category from '../models/category.js';
 
 export const addUser = async (req, res)=>{
     try {
+
+        if(! (req.body.password == req.body.confirm_password)){
+            return res.status(200).json({
+                success: false,
+                message: 'Password and confirm password not matching !!'
+            })
+        }
+
         const user = await User.create(req.body);
         return res.status(200).json({
             success: true,
