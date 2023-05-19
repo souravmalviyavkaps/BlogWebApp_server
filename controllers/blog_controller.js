@@ -6,11 +6,16 @@ import Category from '../models/category.js';
 import upload from '../middleware/multer.js';
 
 export const getBlogsList = async (req, res)=>{
-    let {limit} = req.query;
+    //assuming one page contains posts exactly equal to limit value
+    // so we will skip data like if page = 2, so skip <(page-1)*limit> documents, i.e. if limit = 10, and page = 3, so we will skip (3-1)*10 = 20 posts
+    let {limit, pages} = req.query;
+    const skip = (pages - 1)* limit;
+    
     try {
         const blogs = await Blog.find({})
                                 .populate('category')
                                 .limit(limit)
+                                .skip(skip)
                                 .sort('-createdAt');
         // console.log(blogs)
         return res.status(200).json({
@@ -34,7 +39,7 @@ export const getBlogDetails = async (req, res)=>{
         const blogId = req.params.id;
         console.log(blogId)
         const blog = await Blog.findById(blogId)
-                                .populate('user')
+                                .populate('category')
 
         console.log(blog)
         return res.status(200).json({
@@ -57,6 +62,17 @@ export const postBlog = async (req, res)=>{
     const date = new Date();
 
     try {
+        //check if user is paid or unpaid
+        if(! req.user.isPaidUser){
+            const blogs = await Blog.find({user: req.user._id});
+            if(blogs.length == 5){
+                return res.status(200).json({
+                    success: false,
+                    message: 'User not eligible !!'
+                })
+            }
+        }
+
         console.log('hey', req.file)
 
         if(req.file){

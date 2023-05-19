@@ -83,3 +83,30 @@ export const fetchUsers = async (req, res)=>{
         })
     }    
 }
+
+export const updateUser = async (req, res)=> {
+    try {
+        const id = req.params.id;
+        const user = await User.findById(id);
+        const updates = Object.keys(req.body);
+        updates.map((update)=> {
+            user[update] = req.body[update];
+            
+        })
+
+        await user.save();
+
+        return res.status(200).json({
+            success: true,
+            message: 'User updated successfully !!',
+            data: user
+        })
+
+    } catch (error) {
+        console.log('Error while updating user : ', error);
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}

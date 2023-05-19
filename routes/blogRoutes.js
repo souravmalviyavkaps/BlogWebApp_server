@@ -13,7 +13,7 @@ router.get('/fetch-category/:catid', fetchCategory);
 
 // requires authentication
 router.post('/post-blog',auth, upload.single('img'),  postBlog);
-router.put('/update/:id',upload.single('img'), updateBlog);
-router.delete('/delete/:id', deleteBlog);
+router.put('/update/:id',auth, upload.single('img'), updateBlog);
+router.delete('/delete/:id',auth, deleteBlog);
 
 export default router;
