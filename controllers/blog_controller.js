@@ -39,7 +39,7 @@ export const getBlogDetails = async (req, res)=>{
         const blogId = req.params.id;
         console.log(blogId)
         const blog = await Blog.findById(blogId)
-                                .populate('category')
+                                .populate('category');
 
         console.log(blog)
         return res.status(200).json({

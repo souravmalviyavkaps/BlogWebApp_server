@@ -10,7 +10,6 @@ router.get('/fetch-categories', fetchCategories);
 router.get('/fetch-category/:catid', fetchCategory);
 
 
-
 // requires authentication
 router.post('/post-blog',auth, upload.single('img'),  postBlog);
 router.put('/update/:id',auth, upload.single('img'), updateBlog);
